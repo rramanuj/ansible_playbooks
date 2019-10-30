@@ -4,7 +4,7 @@
   tasks: 
   - name: install httpd
     yum:
-        name: httpd
+        name: "{{ target_service }}"
         state: latest
   - name: create index.html file
     file:
@@ -16,5 +16,5 @@
         path: /var/www/html/index.html
   - name: start httpd
     service: 
-        name: httpd
+        name: "{{ target_service }}"
         state: started
