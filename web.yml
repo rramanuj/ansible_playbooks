@@ -12,7 +12,7 @@
         state: touch
   - name: add web content
     lineinfile:
-        line: "Hello world"
+        line: "{{ ansible_hostname}}"
         path: /var/www/html/index.html
   - name: start httpd
     service: 
