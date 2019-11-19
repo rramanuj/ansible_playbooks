@@ -1,11 +1,15 @@
 --- # Bootstrap Webservers
 - hosts: webservers
   become: yes
-  tasks: 
+  tasks:
+  - debug:
+      var: target_service 
   - name: install httpd
     yum:
         name: "{{ target_service }}"
         state: latest
+    notify:
+      - restart httpd
   - name: create index.html file
     file:
         name: /var/www/html/index.html
@@ -14,7 +18,14 @@
     lineinfile:
         line: "{{ ansible_hostname}}"
         path: /var/www/html/index.html
-  - name: start httpd
-    service: 
-        name: "{{ target_service }}"
-        state: started
+    notify:
+      - restart httpd
+    register: task_debug
+  - debug:
+      msg: "Output of lineinfile is : {{ task_debug }}"
+  handlers:
+  - name: Attempt to start httpd
+    service:
+      name: httpd
+      state: restarted
+    listen: "restart httpd" 
