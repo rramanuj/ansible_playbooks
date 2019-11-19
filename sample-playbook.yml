@@ -1,0 +1,50 @@
+---
+# PLAY 1 -- start
+- hosts: all
+  become: yes
+  tasks:
+    - name: edit host file
+      lineinfile:
+        path: /etc/hosts
+        line: "ansible.xyzcorp.com  169.168.0.1"
+    - name: install elinks
+      yum:
+        name: elinks
+        state: latest
+    - name: create audit user
+      user:
+        name: xyzcorp_audit
+        state: present
+    - name: copy /home/ansible/motd to etc
+      copy:
+        src: /home/ansible/motd
+        dest: /etc/motd
+    - name: cpy /home/ansible/issue to etc
+      copy:
+        src: /home/ansible/issue
+        dest: /etc/issue
+# PLAY 1 -- end
+#
+# PLAY 2 - start
+- hosts: network
+  become: yes
+  tasks:
+    - name: install nmap
+      yum:
+        name: nmap-ncat
+        state: latest
+    - name: create network user
+      user:
+        name: xyzcorp_network
+        state: present
+# PLAY 2 - end
+#
+# PLAY 3 - start
+- hosts: sysadmin
+  become: yes
+  tasks:
+    - name: cp folder from control node
+      copy:
+        src: /home/ansible/scripts.tgz
+        dest: /mnt/storage
+# PLAY 3 - end 
