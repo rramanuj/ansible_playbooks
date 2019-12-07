@@ -1,0 +1,19 @@
+---
+- hosts: localhost
+  tasks:
+    - name: create a working directory using variable passed through
+      file: 
+        name: "{{ working_dir }}"
+        state: directory
+    - name: write service list using service_list variable, the line printed will be the variable
+      lineinfile:
+        path: "{{ working_dir }}/services.txt"
+        create: yes
+        line: "{{ service_list }}"
+    - name: view share property
+      command: ls -la "{{ share_paths['nfs'] }}"
+      register: cmd_output
+    - name: write command module output to file
+      copy:
+        content: "{{ cmd_output }}"
+        dest: "{{ working_dir }}/cmd_output.txt"
